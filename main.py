@@ -1,6 +1,12 @@
+import json
 from typing import Union, Annotated, Optional
 from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi.encoders import jsonable_encoder
 from fastapi.security.http import HTTPAuthorizationCredentials, HTTPBearer
+from helper.prediction import prediction_with_label
+from models.track_genre_feature import TrackGenreFeature, TracksGenreFeature
+
+# from models.track-genre-feature import TrackGenreFeature
 from controllers.ml.predict_genre import predict_track_genre
 from models.audio_features import AudioFeaturesModel
 from models.top_track import TopTrackModel
@@ -79,21 +85,29 @@ async def read_item(
     return topTracks
 
 
-@app.get("/top/tracks/genre")
-def read_item():
-    data = {
-        "danceability": [0.923],
-        "energy": [0.508],
-        "key": [1],
-        "loudness": [-8.668],
-        "speechiness": [0.0468],
-        "acousticness": [0.104],
-        "instrumentalness": [1.21],
-        "liveness": [0.126],
-        "valence": [0.168],
-        "tempo": [108.039],
-    }
+# @app.post("/genre/tracks")
+# def post_prediction(features: TracksGenreFeature):
+#     data = {
+#         "danceability": [0.923],
+#         "energy": [0.508],
+#         "key": [1],
+#         "loudness": [-8.668],
+#         "speechiness": [0.0468],
+#         "acousticness": [0.104],
+#         "instrumentalness": [1.21],
+#         "liveness": [0.126],
+#         "valence": [0.168],
+#         "tempo": [108.039],
+#         "duration_ms": [10],
+#     }
+#     predict_track_genre(data)
+#     return {data: predict_track_genre}
 
-    path = "./assets/ml/spotify_track_genre.h5"
-    predict_track_genre(path, data)
-    return {data: predict_track_genre}
+
+@app.post("/genre/track")
+def post_prediction(feature: TrackGenreFeature):
+    pred = predict_track_genre(feature)
+    json_data = jsonable_encoder(pred)
+
+    print(json_data)
+    return {"data": json_data}
