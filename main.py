@@ -1,4 +1,3 @@
-import json
 from typing import Union, Annotated, Optional
 from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.encoders import jsonable_encoder
@@ -10,12 +9,9 @@ from models.track_genre_feature import TrackGenreFeature, TracksGenreFeature
 from controllers.ml.predict_genre import predict_track_genre
 from models.audio_features import AudioFeaturesModel
 from models.top_track import TopTrackModel
-from starlette import status
-from pydantic import BaseModel, parse_obj_as
+from pydantic import BaseModel
 
 import requests
-
-from models.track import TrackModel
 
 app = FastAPI()
 get_bearer_token = HTTPBearer(auto_error=False)
@@ -71,14 +67,14 @@ async def read_item(
             detail=response_json["error"],
         )
 
-    topTracks = TopTrackModel.model_validate(response_json)
+    topTracks = TopTrackModel.validate(response_json)
 
     for track in topTracks.items:
         response_audio_features = requests.get(
             url=audio_feature_url.format(track.id),
             headers=header,
         )
-        track.audio_features = AudioFeaturesModel.model_validate(
+        track.audio_features = AudioFeaturesModel.validate(
             response_audio_features.json()
         )
 

@@ -16,6 +16,7 @@ Pipfile.lock
 env3.*
 env
 myenv
+newenv
 docs_build
 site_build
 venv
@@ -26,3 +27,4 @@ archive.zip
 *~
 .*.sw?
 .cache
+.space

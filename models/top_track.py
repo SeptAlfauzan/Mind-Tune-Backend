@@ -33,7 +33,7 @@ class Image(BaseModel):
 class Album(BaseModel):
     album_type: str
     artists: List[Artist]
-    available_markets: List[str]
+    # available_markets: List[str]
     external_urls: ExternalUrls
     href: str
     id: str
@@ -46,23 +46,14 @@ class Album(BaseModel):
     uri: str
 
 
-class Artist1(BaseModel):
-    external_urls: ExternalUrls
-    href: str
-    id: str
-    name: str
-    type: str
-    uri: str
-
-
 class ExternalIds(BaseModel):
     isrc: str
 
 
 class Item(BaseModel):
     album: Album
-    artists: List[Artist1]
-    available_markets: List[str]
+    artists: List[Artist]
+    # available_markets: List[str]
     disc_number: int
     duration_ms: int
     explicit: bool
